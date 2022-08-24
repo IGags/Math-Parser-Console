@@ -1,4 +1,5 @@
-﻿using MathParser.Interfaces;
+﻿using System.Collections;
+using MathParser.Interfaces;
 
 namespace MathParser.IExpressionTreeNodeRealizations;
 
@@ -28,15 +29,27 @@ internal class SingleSidedTreeNode : IExpressionTreeNode
     public IExpressionTreeNode BalanceTree(IExpressionTreeNode otherNode)
     {
         if (otherNode.GetPriority() <= GetPriority()) return otherNode.BalanceTree(this);
-        if(_leaf == null) return AddUnparsedNode(otherNode);
+        if(_leaf == null) return AddNode(otherNode);
         _leaf = _leaf.BalanceTree(otherNode);
         return this;
     }
 
-    private IExpressionTreeNode AddUnparsedNode(IExpressionTreeNode node)
+    private IExpressionTreeNode AddNode(IExpressionTreeNode node)
     {
-        if (node is UnparsedTreeNode unparsed) _leaf = unparsed.Parse();
-        else _leaf = node;
+        _leaf = node;
         return this;
+    }
+
+    public IEnumerator GetEnumerator()
+    {
+        yield return this;
+        if (_leaf is UnparsedTreeNode unparsed) _leaf = unparsed.Parse();
+        else if (_leaf != null)
+        {
+            foreach (var val in _leaf)
+            {
+                yield return val;
+            }
+        }
     }
 }

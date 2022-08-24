@@ -30,38 +30,30 @@ internal class BothSidedTreeNode : IExpressionTreeNode
     public IExpressionTreeNode BalanceTree(IExpressionTreeNode otherNode)
     {
         if (GetPriority() > otherNode.GetPriority()) return otherNode.BalanceTree(this);
-        if (_left == null)
-        {
-            if (otherNode is UnparsedTreeNode node) otherNode = node.Parse();
-            _left = otherNode;
-        }
-        else if (_right == null)
-        {
-            if (otherNode is UnparsedTreeNode node) otherNode = node.Parse();
-            _right = otherNode;
-        }
-        else
-        {
-            _right = _right?.BalanceTree(otherNode);
-        }
-
+        if (_left == null) _left = otherNode;
+        else if (_right == null) _right = otherNode;
+        else _right = _right?.BalanceTree(otherNode);
         return this;
     }
 
     public IEnumerator GetEnumerator()
     {
         yield return this;
-        if (_left != null)
+        if (_right is UnparsedTreeNode unparsedRight) _right = unparsedRight.Parse();
+        else if (_right != null)
         {
-            foreach (var value in _left)
+            foreach (var val in _right)
             {
-                yield return value;
+                yield return val;
             }
         }
-        if (_right == null) yield break;
-        foreach (var value in _right)
+        if (_left is UnparsedTreeNode unparsedLeft) _left = unparsedLeft.Parse();
+        else if (_left != null)
         {
-            yield return value;
+            foreach (var val in _left)
+            {
+                yield return val;
+            }
         }
     }
 }

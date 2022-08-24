@@ -1,4 +1,5 @@
-﻿using MathParser.Interfaces;
+﻿using System.Collections;
+using MathParser.Interfaces;
 
 namespace MathParser.IExpressionTreeNodeRealizations;
 
@@ -29,5 +30,10 @@ internal class ValueTreeNode : IExpressionTreeNode
         if (otherNode.GetPriority() >= GetPriority())
             throw new InvalidOperationException("Function and other node cannot stand nearby");
         return otherNode.BalanceTree(this);
+    }
+
+    public IEnumerator GetEnumerator()
+    {
+        yield return this;
     }
 }

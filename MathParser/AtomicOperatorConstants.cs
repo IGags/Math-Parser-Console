@@ -1,4 +1,4 @@
-﻿using MathParser.IFunctionRealizations;
+﻿using MathParser.IFunctionAtomicRealizations;
 using MathParser.IOperatorDescriptionRealizations;
 
 namespace MathParser;

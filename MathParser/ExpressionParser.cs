@@ -1,8 +1,9 @@
 ﻿using System.Globalization;
 using System.Text;
 using MathParser.IExpressionTreeNodeRealizations;
+using MathParser.Interfaces;
 
-namespace MathParser;
+namespace MathParser; //:TODO затарможенный парсер IEnumerable без детей
 
 public enum ParserBehave
 {
@@ -13,9 +14,11 @@ public enum ParserBehave
 public class ExpressionParser
 {
     private readonly ParserBehave _behave;
+    private readonly ILogger _logger;
 
-    public ExpressionParser(ParserBehave behave)
+    public ExpressionParser(ParserBehave behave, ILogger? logger = null)
     {
+        _logger = logger ?? new SilentLogger();
         _behave = behave;
     }
 
@@ -25,17 +28,14 @@ public class ExpressionParser
         if (!expression.CheckBracketExpression()) throw new Exception("bracket expression is incorrect");
         var node = new UnparsedTreeNode(expression, _behave).Parse();
         var value = node.Evaluate();
-        switch (value)
+        _logger.Log(node);
+        return value switch
         {
-            case bool val:
-                return val.ToString();
-            case double val:
-                return val.ToString(CultureInfo.InvariantCulture);
-            case string val:
-                return val;
-            default:
-                return value.ToString();
-        }
+            bool val => val.ToString(),
+            double val => val.ToString(CultureInfo.InvariantCulture),
+            string val => val,
+            _ => value.ToString()
+        };
     }
 
     private string PreProcessString(string expression)

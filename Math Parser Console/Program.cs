@@ -6,7 +6,7 @@ namespace Math_Parser_Console
     {
         public static void Main()
         {
-            var parser = new ExpressionParser(ParserBehave.ThrowException);
+            var parser = new ExpressionParser(ParserBehave.ThrowException, new ConsoleLogger());
             while (true)
             {
                 var inputString = Console.ReadLine();

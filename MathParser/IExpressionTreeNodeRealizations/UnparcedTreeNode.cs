@@ -1,4 +1,5 @@
-﻿using MathParser.Interfaces;
+﻿using System.Collections;
+using MathParser.Interfaces;
 
 namespace MathParser.IExpressionTreeNodeRealizations;
 
@@ -84,11 +85,18 @@ internal class UnparsedTreeNode : IExpressionTreeNode
             }
         }
 
+        if (_tree is UnparsedTreeNode tree) _tree = tree.Parse();
+        foreach (var node in _tree) { }
         return _tree ?? throw new InvalidOperationException("Symbolic sequence wasn't parsed");
     }
 
     private void UpdateTree(IExpressionTreeNode additionalNode)
     {
         _tree = _tree == null ? additionalNode : _tree.BalanceTree(additionalNode);
+    }
+
+    public IEnumerator GetEnumerator()
+    {
+        throw new NotImplementedException();
     }
 }
