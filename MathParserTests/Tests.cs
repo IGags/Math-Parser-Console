@@ -112,6 +112,16 @@ namespace MathParserTests
 
 
         #endregion
+
+        #region CustomFunctionTests
+
+        [TestCase("0.9999996829318346", "sin(3.14/2)")]
+        public void CustomFunctionTests(string should, string unparsed)
+        {
+            Assert.AreEqual(should, _parser.Solve(unparsed));
+        }
+
+        #endregion
     }
 
 #region ExtensionClass

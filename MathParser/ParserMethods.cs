@@ -108,8 +108,8 @@ internal class ParserMethods
         params FunctionProvider[] providers)
     {
         var bracketIndex = fragment.IndexOf('(');
-        if (bracketIndex < 0) return null;
-        var functionName = fragment[..(bracketIndex - 1)];
+        if (bracketIndex <= 0) return null;
+        var functionName = fragment[..bracketIndex];
         if (!CustomFunctionList.Functions.ContainsKey(functionName)) return null;
         fragment = UpdateFragment(fragment, functionName.Length);
         var arguments = EvaluateBracketExpression(ref fragment).Split(',', StringSplitOptions.RemoveEmptyEntries);

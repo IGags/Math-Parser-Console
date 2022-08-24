@@ -28,7 +28,7 @@ public class ExpressionParser
         if (!expression.CheckBracketExpression()) throw new Exception("bracket expression is incorrect");
         var node = new UnparsedTreeNode(expression, _behave).Parse();
         var value = node.Evaluate();
-        _logger.Log(node);
+        //_logger.Log(node);
         return value switch
         {
             bool val => val.ToString(),

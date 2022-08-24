@@ -31,7 +31,7 @@ internal class PolySidedTreeNode : IExpressionTreeNode
 
     public object Evaluate()
     {
-        return _treeNode.Function.Act(_nodes.Select(n => n.Evaluate()));
+        return _treeNode.Function.Act(_nodes.Select(n => n.Evaluate()).ToArray());
     }
 
     public IEnumerator GetEnumerator()
