@@ -53,6 +53,14 @@ internal class UnparsedTreeNode : IExpressionTreeNode
         var prevSegmentData = PreviousSegmentContent.None;
         while (_fragment.Length != 0)
         {
+            if (_fragment.StartsWith("\""))
+            {
+                var valueNode = _parserMethods.ParseString(ref _fragment);
+                prevSegmentData = PreviousSegmentContent.Value;
+                UpdateTree(valueNode);
+                continue;
+            }
+
             if (_fragment.StartsWith("("))
             {
                 var unparsedNode = _parserMethods.ResolveBrackets(ref _fragment);
@@ -76,18 +84,18 @@ internal class UnparsedTreeNode : IExpressionTreeNode
                 continue;
             }
 
-            switch (Behave)
+            throw Behave switch
             {
-                case ParserBehave.ThrowException:
-                    throw new InvalidOperationException($"string part is unparsed{_fragment}");
-                case ParserBehave.UnknownSequenceAsVariable:
-                    throw new NotImplementedException();
-            }
+                ParserBehave.ThrowException => new InvalidOperationException($"string part is unparsed:{_fragment}"),
+                ParserBehave.UnknownSequenceAsVariable => new NotImplementedException(),
+                _ => new ArgumentOutOfRangeException()
+            };
         }
 
         if (_tree is UnparsedTreeNode tree) _tree = tree.Parse();
+        if (_tree == null) throw new InvalidOperationException("Symbolic sequence wasn't parsed");
         foreach (var node in _tree) { }
-        return _tree ?? throw new InvalidOperationException("Symbolic sequence wasn't parsed");
+        return _tree;
     }
 
     private void UpdateTree(IExpressionTreeNode additionalNode)

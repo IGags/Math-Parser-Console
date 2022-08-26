@@ -10,10 +10,27 @@ internal class ParserMethods
 {
     private readonly ParserBehave _behave;
     private readonly Regex _regex = new(@"^(?<Value>\d*((\.|\,){1}\d+)?)(?<Left>.*)", RegexOptions.Compiled);
+    private readonly IFunctionProvider _customFunctions = new CustomFunctionList();
 
-    public ParserMethods(ParserBehave behave)
+    internal ParserMethods(ParserBehave behave)
     {
         _behave = behave;
+    }
+
+    public IExpressionTreeNode ParseString(ref string fragment) 
+    {
+        var prevSymbol = char.MaxValue;
+        for (var i = 1; i < fragment.Length; i++)
+        {
+            prevSymbol = fragment[i];
+            if (prevSymbol != '\\' && fragment[i] == '\"')
+            {
+                var node = new ValueTreeNode(fragment.Substring(1, i - 1), _behave);
+                fragment = UpdateFragment(fragment, i + 1);
+                return node;
+            }
+        }
+        throw new ArgumentException($"fragment has no closing quoter {fragment}");
     }
 
     public IExpressionTreeNode? ParseOperator(ref string fragment, ref PreviousSegmentContent content)
@@ -72,7 +89,7 @@ internal class ParserMethods
         var sameOperators = AtomicOperatorConstants.AtomicOperators
             .Where(value => fragment.StartsWith(value.Key))
             .SelectMany(value => value.Value.Select(val => (value.Key, val)))
-            .OrderByDescending(item => item.val.Priority);
+            .OrderByDescending(item => item.val.Priority).ThenByDescending(ent => ent.Key.Length);
 
         foreach (var operatorDescription in sameOperators)
             switch (operatorDescription.val.Attachment)
@@ -104,16 +121,15 @@ internal class ParserMethods
     }
 
     private IExpressionTreeNode? TryParseFunction(ref string fragment,
-        PreviousSegmentContent previousSegmentContext,
-        params FunctionProvider[] providers)
+        PreviousSegmentContent previousSegmentContext)
     {
         var bracketIndex = fragment.IndexOf('(');
         if (bracketIndex <= 0) return null;
         var functionName = fragment[..bracketIndex];
-        if (!CustomFunctionList.Functions.ContainsKey(functionName)) return null;
+        if (!_customFunctions.Functions.ContainsKey(functionName)) return null;
         fragment = UpdateFragment(fragment, functionName.Length);
         var arguments = EvaluateBracketExpression(ref fragment).Split(',', StringSplitOptions.RemoveEmptyEntries);
-        return new PolySidedTreeNode(CustomFunctionList.Functions[functionName],
+        return new PolySidedTreeNode(_customFunctions.Functions[functionName],
             arguments.Select(value => (IExpressionTreeNode)new UnparsedTreeNode(value, _behave)).ToList(), _behave);
     }
 

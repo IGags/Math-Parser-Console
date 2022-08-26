@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MathParserConsole", "Math P
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MathParser", "MathParser\MathParser.csproj", "{E2C7BC1F-C33F-4496-A381-38BB7192D4E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathParserTests", "MathParserTests\MathParserTests.csproj", "{FB2958F2-37B2-4FF3-860E-1974171E4E7C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MathParserTests", "MathParserTests\MathParserTests.csproj", "{FB2958F2-37B2-4FF3-860E-1974171E4E7C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,7 +26,6 @@ Global
 		{FB2958F2-37B2-4FF3-860E-1974171E4E7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FB2958F2-37B2-4FF3-860E-1974171E4E7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB2958F2-37B2-4FF3-860E-1974171E4E7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FB2958F2-37B2-4FF3-860E-1974171E4E7C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

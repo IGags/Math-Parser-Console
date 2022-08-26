@@ -2,7 +2,7 @@
 
 namespace MathParser.IOperatorDescriptionRealizations;
 
-internal class FunctionOperatorDescription : IOperatorDescription
+public class FunctionOperatorDescription : IOperatorDescription
 {
     public FunctionOperatorDescription(IFunction function, string name)
     {
