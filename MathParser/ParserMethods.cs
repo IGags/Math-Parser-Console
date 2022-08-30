@@ -11,6 +11,7 @@ internal class ParserMethods
     private readonly ParserBehave _behave;
     private readonly Regex _regex = new(@"^(?<Value>\d*((\.|\,){1}\d+)?)(?<Left>.*)", RegexOptions.Compiled);
     private readonly IFunctionProvider _customFunctions = new CustomFunctionList();
+    private readonly ICosntantProvider _constants = new MathConstants(); 
 
     internal ParserMethods(ParserBehave behave)
     {
@@ -81,6 +82,18 @@ internal class ParserMethods
     public UnparsedTreeNode ResolveBrackets(ref string fragment)
     {
         return new UnparsedTreeNode(EvaluateBracketExpression(ref fragment), _behave);
+    }
+
+    public ValueTreeNode? ParseConstant(ref string fragment)
+    {
+        foreach(var constant in _constants.ConstantDictioanry.Keys.OrderByDescending(key => key.Length))
+        {
+            if (!fragment.StartsWith(constant)) continue;
+            var node = new ValueTreeNode(_constants.ConstantDictioanry[constant], _behave);
+            fragment = UpdateFragment(fragment, constant.Length);
+            return node;
+        }
+        return null;
     }
 
     private static (AtomicOperatorDescription?, int) TryParseAtomicOperator(string fragment,

@@ -76,6 +76,13 @@ internal class UnparsedTreeNode : IExpressionTreeNode
                 continue;
             }
 
+            var constant = _parserMethods.ParseConstant(ref _fragment);
+            if (constant != null)
+            {
+                UpdateTree(constant);
+                continue;
+            }
+
             var number = _parserMethods.ParseValue(ref _fragment);
             if (number != null)
             {
